@@ -1,8 +1,8 @@
 <?php
-//Este archivo sirve para hecr consultas
+//Este archivo sirve para hacer consultas en un futuro, mientras solo muestra
 use Illuminate\Support\Facades\Route;
 
 Route::get('/',function(){
-    return "Hola desde admin";
+    return view('admin.dashboard');
 
-});
+})->name('dashboard');
