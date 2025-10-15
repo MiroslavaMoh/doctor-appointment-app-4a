@@ -16,6 +16,9 @@
 
         <!-- Font awesome -->
         <script src="https://kit.fontawesome.com/b66dd5d28c.js" crossorigin="anonymous"></script>
+        
+        <!-- Botones más decentes Wire UI -->
+        <wireui:scripts />
 
         <!-- Styles -->
         @livewireStyles
