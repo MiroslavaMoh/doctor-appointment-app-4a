@@ -1,88 +1,127 @@
 @php
-//Arreglo de iconos para el side bar, para no andar repitiendeo todo el código parte por parte
-    $links =[
-        [
-            'name' => 'Dashboard',
-            'icon' => 'fa-solid fa-gauge',
-            'href' => route('admin.dashboard'),
-            'active' => request()->routeIs('admin.dashboard')
-        ],
-        [
-            'header' => 'Management'
-        ],
-        [
-            'name' => 'Cats',
-            'icon' => 'fa-solid fa-cat',
-            'href' => route('admin.dashboard'),
-            'active' => request()->routeIs('admin.dashboard')
-        ],
-        [
-            'name' => 'Playdates',
-            'icon' => 'fa-solid fa-calendar',
-            'href' => route('admin.dashboard'),
-            'active' => request()->routeIs('admin.dashboard')
-        ],
-        [
-            'name' => 'Food service',
-            'icon' => 'fa-solid fa-fish',
-            'href' => route('admin.dashboard'),
-            'active' => request()->routeIs('admin.dashboard')
-        ],
-        [
-            'name' => 'Settings',
-            'icon' => 'fa-solid fa-gear',
-            'href' => route('admin.dashboard'),
-            'active' => request()->routeIs('profile.show')
+// Arreglo de iconos para el side bar
+$links = [
+    [
+        'name' => 'Dashboard',
+        'icon' => 'fa-solid fa-gauge',
+        'href' => route('admin.dashboard'),
+        'active' => request()->routeIs('admin.dashboard'),
+    ],
+    [
+        'header' => 'Management'
+    ],
+    [
+        'name' => 'Cats',
+        'icon' => 'fa-solid fa-cat',
+        'href' => route('admin.dashboard'),
+        'active' => request()->routeIs('admin.dashboard')
+    ],
+    [
+        'name' => 'Playdates',
+        'icon' => 'fa-solid fa-calendar',
+        'href' => route('admin.dashboard'),
+        'active' => request()->routeIs('admin.dashboard')
+    ],
+    [
+        'name' => 'Food service',
+        'icon' => 'fa-solid fa-fish',
+        'href' => route('admin.dashboard'),
+        'active' => request()->routeIs('admin.dashboard')
+    ],
+    [
+        'name' => 'Settings',
+        'icon' => 'fa-solid fa-gear',
+        'href' => route('profile.show'),
+        'active' => request()->routeIs('profile.show')
+    ],
+    [
+        'name' => 'More Options',
+        'icon' => 'fa-solid fa-bars',
+        'active' => false,
+        'submenu' => [
+            [
+                'name' => 'Products',
+                'href' => '#',
+                'active' => false,
+            ],
+            [
+                'name' => 'Billing',
+                'href' => '#',
+                'active' => false,
+            ],
+            [
+                'name' => 'Invoice',
+                'href' => '#',
+                'active' => false,
+            ],
         ]
-    ];
+    ],
+];
 @endphp
 
-<aside id="logo-sidebar" class="fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform -translate-x-full bg-white border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700" aria-label="Sidebar">
-        <div class="h-full px-3 pb-4 overflow-y-auto bg-white dark:bg-gray-800">
-            <ul class="space-y-1 font-medium">
-                @foreach ($links as $link)
-                <li>
+<aside id="logo-sidebar" class="fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform -translate-x-full 
+    bg-white border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700" 
+    aria-label="Sidebar">
 
-                    @isset ($link ['header'])
-                    <div class="px-3 mt-4 mb-2 text-xs font-semibold text-gray-500 uppercase dark:text-gray-400"> 
-                        {{$link['header']}} 
-                    </div>
+    <div class="h-full px-3 pb-4 overflow-y-auto bg-white dark:bg-gray-800">
+        <ul class="space-y-1 font-medium">
+            @foreach ($links as $link)
+                {{-- Si es un encabezado --}}
+                @isset($link['header'])
+                    <li>
+                        <div class="px-3 mt-4 mb-2 text-xs font-semibold text-gray-500 uppercase dark:text-gray-400">
+                            {{ $link['header'] }}
+                        </div>
+                    </li>
+                @else
+                    {{-- Si tiene submenu --}}
+                    @isset($link['submenu'])
+                        <li>
+                            <button type="button"
+                                class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group
+                                hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+                                aria-controls="dropdown-{{ Str::slug($link['name']) }}"
+                                data-collapse-toggle="dropdown-{{ Str::slug($link['name']) }}">
+                                <span class="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 
+                                    group-hover:text-gray-300 dark:group-hover:text-white {{ $link['active'] ? 'dark:group-hover:text-white' : '' }}">
+                                    <i class="{{ $link['icon'] }}"></i>
+                                </span>
+                                <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap">
+                                    {{ $link['name'] }}
+                                </span>
+                                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="m1 1 4 4 4-4" />
+                                </svg>
+                            </button>
+                            <ul id="dropdown-{{ Str::slug($link['name']) }}" class="hidden py-2 space-y-2">
+                                @foreach ($link['submenu'] as $item)
+                                    <li>
+                                        <a href="{{ $item['href'] }}"
+                                            class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group
+                                            hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                                            {{ $item['name'] }}
+                                        </a>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </li>
                     @else
-                    <a href="{{ $link['href'] }}" 
-                    class="flex items-center p-2 text-gray-300 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-                        <span class="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 
-                                    group-hover:text-gray-300 dark:group-hover:text-white 
-                                    {{ $link['active'] ? 'dark:group-hover:text-white' : '' }}">
-                            <i class="{{ $link['icon'] }}"></i>
-                        </span>
-                        <span class="ms-3">{{ $link['name'] }}</span>
-                    </a>
+                        {{-- Enlace normal --}}
+                        <li>
+                            <a href="{{ $link['href'] }}"
+                                class="flex items-center p-2 text-gray-300 rounded-lg dark:text-white 
+                                hover:bg-gray-100 dark:hover:bg-gray-700 group {{ $link['active'] ? 'bg-gray-100 dark:bg-gray-700' : '' }}">
+                                <span class="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 
+                                    group-hover:text-gray-300 dark:group-hover:text-white">
+                                    <i class="{{ $link['icon'] }}"></i>
+                                </span>
+                                <span class="ms-3">{{ $link['name'] }}</span>
+                            </a>
+                        </li>
+                    @endisset
                 @endisset
-                </li>
-                @endforeach
-
-                 <li>
-            <button type="button" class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700" aria-controls="dropdown-example" data-collapse-toggle="dropdown-example">
-                  <svg class="shrink-0 w-5 h-5 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 21">
-                     <path d="M15 12a1 1 0 0 0 .962-.726l2-7A1 1 0 0 0 17 3H3.77L3.175.745A1 1 0 0 0 2.208 0H1a1 1 0 0 0 0 2h.438l.6 2.255v.019l2 7 .746 2.986A3 3 0 1 0 9 17a2.966 2.966 0 0 0-.184-1h2.368c-.118.32-.18.659-.184 1a3 3 0 1 0 3-3H6.78l-.5-2H15Z"/>
-                  </svg>
-                  <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap">E-commerce</span>
-                  <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
-                  </svg>
-            </button>
-            <ul id="dropdown-example" class="hidden py-2 space-y-2">
-                  <li>
-                     <a href="#" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Products</a>
-                  </li>
-                  <li>
-                     <a href="#" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Billing</a>
-                  </li>
-                  <li>
-                     <a href="#" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Invoice</a>
-                  </li>
-            </ul>
-         </li>
-            </ul>
-        </div>
-        </aside>
+            @endforeach
+        </ul>
+    </div>
+</aside>
