@@ -65,6 +65,7 @@ $links = [
 
     <div class="h-full px-3 pb-4 overflow-y-auto bg-white dark:bg-gray-800">
         <ul class="space-y-1 font-medium">
+            <div class="h-3"></div>{{-- espacio superior --}}
             @foreach ($links as $link)
                 {{-- Si es un encabezado --}}
                 @isset($link['header'])

@@ -1,3 +1,4 @@
+@props(['breadcrumbs' => []])
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
@@ -31,10 +32,12 @@
         @include('layouts.includes.admin.sidebar')
 
         <div class="p-4 sm:ml-64">
+            <div class="h-5"></div>
         <!-- Margin top 14px -->
-            <div class="mt-14">
-                {{$slot}}
+        <div class="mt-14 flex items-center justify-between w-full">
+             @include('layouts.includes.admin.breadcrumb', ['breadcrumbs' => $breadcrumbs])   
         </div>
+        {{$slot}}
         <!-- Termina segmento Sidebar with navbar de Flowbite -->   
         @stack('modals')
 
