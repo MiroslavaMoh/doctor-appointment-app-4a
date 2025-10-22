@@ -83,8 +83,8 @@ $links = [
                                 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
                                 aria-controls="dropdown-{{ Str::slug($link['name']) }}"
                                 data-collapse-toggle="dropdown-{{ Str::slug($link['name']) }}">
-                                <span class="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 
-                                    group-hover:text-gray-300 dark:group-hover:text-white {{ $link['active'] ? 'dark:group-hover:text-white' : '' }}">
+                                <span class="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-800 
+                                    group-hover:text-gray-600 dark:group-hover:text-white {{ $link['active'] ? 'dark:group-hover:text-white' : '' }}">
                                     <i class="{{ $link['icon'] }}"></i>
                                 </span>
                                 <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap">
@@ -100,7 +100,7 @@ $links = [
                                     <li>
                                         <a href="{{ $item['href'] }}"
                                             class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group
-                                            hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                                            hover:bg-gray-400 dark:text-white dark:hover:bg-gray-700">
                                             {{ $item['name'] }}
                                         </a>
                                     </li>
@@ -111,10 +111,10 @@ $links = [
                         {{-- Enlace normal --}}
                         <li>
                             <a href="{{ $link['href'] }}"
-                                class="flex items-center p-2 text-gray-300 rounded-lg dark:text-white 
-                                hover:bg-gray-100 dark:hover:bg-gray-700 group {{ $link['active'] ? 'bg-gray-100 dark:bg-gray-700' : '' }}">
+                                class="flex items-center p-2 text-gray-600 rounded-lg dark:text-white 
+                                hover:bg-gray-300 dark:hover:bg-gray-700 group {{ $link['active'] ? 'bg-gray-300 dark:bg-gray-700' : '' }}">
                                 <span class="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 
-                                    group-hover:text-gray-300 dark:group-hover:text-white">
+                                    group-hover:text-gray-600 dark:group-hover:text-white">
                                     <i class="{{ $link['icon'] }}"></i>
                                 </span>
                                 <span class="ms-3">{{ $link['name'] }}</span>
