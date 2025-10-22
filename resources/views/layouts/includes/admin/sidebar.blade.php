@@ -29,10 +29,10 @@ $links = [
         'active' => request()->routeIs('admin.dashboard')
     ],
     [
-        'name' => 'Settings',
-        'icon' => 'fa-solid fa-gear',
-        'href' => route('profile.show'),
-        'active' => request()->routeIs('profile.show')
+        'name' => 'Roles y permisos',
+        'icon' => 'fa-solid fa-shield-halved',
+        'href' => route('admin.roles.index'),
+        'active' => request()->routeIs('admin.roles.*')
     ],
     [
         'name' => 'More Options',
