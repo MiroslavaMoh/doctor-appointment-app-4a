@@ -1,12 +1,12 @@
-<x-admin-layout title="Create | Onigiri-san"
+<x-admin-layout title="Delete | Onigiri-san"
 :breadcrumbs="[
     ['name' => 'Dashboard', 
     'href' => route('admin.dashboard')],
-    
     ['name' => 'Roles',
     'href' => route('admin.roles.index')],
-
-    ['name' => 'Nuevo'],
+    
+    ['name' => 'Roles'],
+    ['name' => 'Delete'],
 
 ]">
 

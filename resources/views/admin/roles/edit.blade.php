@@ -1,7 +1,9 @@
-<x-admin-layout title="Efit | Onigiri-san"
+<x-admin-layout title="Edit | Onigiri-san"
 :breadcrumbs="[
     ['name' => 'Dashboard', 
     'href' => route('admin.dashboard')],
+    ['name' => 'Roles',
+    'href' => route('admin.roles.index')],
     
     ['name' => 'Edit'],
 ]">
