@@ -17,3 +17,10 @@ Route::middleware([
         return view('dashboard');
     })->name('dashboard');
 });
+
+/*Route::get('/admin/roles/{role}/edit', [RoleController::class, 'edit'])
+    ->name('admin.roles.edit');
+Route::get('/admin/roles/create', [RoleController::class, 'create'])
+    ->name('admin.roles.create');
+Route::get('/admin/roles', [RoleController::class, 'index'])
+    ->name('admin.roles.index');*/

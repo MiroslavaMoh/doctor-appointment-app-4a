@@ -25,9 +25,13 @@ class RoleTable extends DataTableComponent
                 ->searchable(),
             Column::make("Fecha", "created_at")
                 ->sortable()
-                ->format(function($value) {
+                ->format(function($value) { // formateo de fecha
                     return $value->format('d/m/Y');
                 }),
+                Column::make("Acciones") //  columna de botones acciones
+                ->label(function($row){
+                    return view('admin.roles.actions', ['role' => $row]);
+                })
         ];
     }
 }
