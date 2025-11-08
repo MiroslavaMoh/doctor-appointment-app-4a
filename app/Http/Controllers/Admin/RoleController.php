@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Spatie\Permission\Models\Role;
 
 class RoleController extends Controller
 {
@@ -30,7 +31,23 @@ class RoleController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        //validar creacion correcta
+        $request->validate([
+            'name' => 'required|unique:roles,name',
+        ]);
+        //SI pasa validacion se crea rol
+        Role::create(['name' =>$request->name]);
+        // Variable de un solo uso para alertas
+        session()->flash('swal',
+            [
+                'icon' => 'success',
+                'title' => 'Rol creado correctamente.',
+                'text' => 'El rol se ha creado correctamente.',
+            ]
+        );
+
+        //Redireccionamiento a tabla
+        return redirect()->route('admin.roles.index')->with('success', 'Role created successfully.');
     }
 
     /**
@@ -62,10 +79,21 @@ class RoleController extends Controller
      */
     public function destroy(string $id)
     {
-        return view('admin.roles.delete');
+        $role = Role::findOrFail($id); // Busca el rol o lanza error 404 si no existe
+
+        $role->delete(); // Elimina el registro
+
+        session()->flash('swal', [
+            'icon' => 'success',
+            'title' => 'Rol eliminado correctamente.',
+            'text' => 'El rol ha sido eliminado del sistema.',
+        ]);
+
+        return redirect()->route('admin.roles.index');
     }
     public function delete(string $id)
     {
         return view('admin.roles.delete');
+
     }
 }

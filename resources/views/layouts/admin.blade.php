@@ -21,6 +21,9 @@
 
         <!-- Font awesome -->
         <script src="https://kit.fontawesome.com/b66dd5d28c.js" crossorigin="anonymous"></script>
+
+        <!--SweetAlert2 -->
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         
         <!-- Botones más decentes Wire UI -->
         <wireui:scripts />
@@ -70,5 +73,25 @@
 
         @livewireScripts
         <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
+
+        <!-- SweetAlert2 -->
+       <!--@if(@session('swal'))
+            <script>
+                Swal.fire(@json('swal'));
+            </script>-->
+            @if (session('swal'))
+                <script>
+                    Swal.fire({
+                        icon: '{{ session('swal.icon') }}',
+                        title: '{{ session('swal.title') }}',
+                        text: '{{ session('swal.text') }}',
+                        confirmButtonColor: '#3085d6',
+                        confirmButtonText: 'OK'
+                    });
+                </script>
+            @endif
+
+        
+        @endif
     </body>
 </html>
