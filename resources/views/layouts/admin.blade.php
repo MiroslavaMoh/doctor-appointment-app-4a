@@ -90,8 +90,32 @@
                     });
                 </script>
             @endif
+        @endif
+
+            <!-- Confirmación de eliminación -->
+            <script>
+                document.querySelectorAll('.delete-role-form').forEach(form => {
+                    form.addEventListener('submit', function(e) {
+                        e.preventDefault(); // evita el envío inmediato
+
+                        Swal.fire({
+                            title: "¿Estás seguro?",
+                            text: "Este cambio no se puede revertir.",
+                            icon: "warning",
+                            showCancelButton: true,
+                            confirmButtonColor: "#3085d6",
+                            cancelButtonColor: "#d33",
+                            confirmButtonText: "¡Sí, eliminarlo!",
+                            cancelButtonText: "Cancelar"
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                form.submit(); // ahora sí envía el form
+                            }
+                        });
+                    });
+                });
+            </script>
 
         
-        @endif
     </body>
 </html>

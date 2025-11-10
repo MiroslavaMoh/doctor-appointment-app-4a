@@ -61,39 +61,87 @@ class RoleController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Role $role)
     {
-        return view('admin.roles.edit');
+         if($role->id <=4){
+            session()->flash('swal', [
+                'icon' => 'error',
+                'title' => 'No se puede eliminar este rol.',
+                'text' => 'Este rol es esencial para el sistema y no puede ser eliminado.',
+            ]);
+
+            return redirect()->route('admin.roles.index');
+         }
+        return view('admin.roles.edit', compact('role'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+   public function update(Request $request, Role $role)
     {
-        //
+        // Validar edición correcta
+        $request->validate([
+            'name' => 'required|unique:roles,name,' . $role->id,
+        ]);
+
+        // Si no hubo cambios
+        if ($role->name === $request->name) {
+            session()->flash('swal', [
+                'icon' => 'info',
+                'title' => 'Sin cambios.',
+                'text' => 'No se detectaron modificaciones.',
+            ]);
+
+            return redirect()->route('admin.roles.edit', $role);
+        }
+
+        // Actualizar rol
+        $role->update(['name' => $request->name]);
+
+        // Alerta de éxito
+        session()->flash('swal', [
+            'icon' => 'success',
+            'title' => 'Rol actualizado correctamente.',
+            'text' => 'El rol se ha editado correctamente.',
+        ]);
+
+        // Redireccionamiento a la tabla
+        return redirect()->route('admin.roles.index')->with('success', 'Role updated successfully.');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Role $role)
     {
-        $role = Role::findOrFail($id); // Busca el rol o lanza error 404 si no existe
+        if ($role->id <=4){
+            //variable de un solo uso
+            session()->flash('swal',
+            [
+                'icon' => 'error',
+                'title' => 'Error',
+                'text' => 'No se puede eliminar este rol es de vital importancia para la app.'
+            ]
+            );
+            return redirect()->route('admin.roles.index');
+        }
 
-        $role->delete(); // Elimina el registro
 
-        session()->flash('swal', [
-            'icon' => 'success',
-            'title' => 'Rol eliminado correctamente.',
-            'text' => 'El rol ha sido eliminado del sistema.',
-        ]);
+        //Alerta
+        session()->flash('swal',
 
+            [
+                'icon' => 'success',
+                'title' => 'rol eliminado correctamente',
+                'text' => 'El rol ha sido eliminado exitosamente'
+            ]
+        );
+                //Borrar el elemento
+        $role->delete();
+
+        //Redireccionar al mismo lugar
         return redirect()->route('admin.roles.index');
     }
-    public function delete(string $id)
-    {
-        return view('admin.roles.delete');
-
-    }
+ 
 }
