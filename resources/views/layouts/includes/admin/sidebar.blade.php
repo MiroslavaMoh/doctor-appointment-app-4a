@@ -29,6 +29,12 @@ $links = [
         'active' => request()->routeIs('admin.dashboard')
     ],
     [
+        'name' => 'Usuarios',
+        'icon' => 'fa-solid fa-users',
+        'href' => route('admin.users.index'),
+        'active' => request()->routeIs('admin.users.*')
+    ],
+    [
         'name' => 'Roles y permisos',
         'icon' => 'fa-solid fa-shield-halved',
         'href' => route('admin.roles.index'),
