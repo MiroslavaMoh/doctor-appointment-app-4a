@@ -4,7 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Role; //usa spatie porque es externo a user
+use App\Models\User; //usa propio porque es user
 
 class UserController extends Controller
 {
@@ -23,32 +24,37 @@ class UserController extends Controller
      */
     public function create()
     {
-        return view('admin.users.create');
+        $roles = Role::all(); //Llama variable de roles con ayuda de spatie
+        return view('admin.users.create', compact ('roles')); //el compact envia la variable a create users
     }
 
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {
-        //validar creacion correcta
-        $request->validate([
-            'name' => 'required|unique:user,name',
-        ]);
-        //SI pasa validacion se crea rol
-        Role::create(['name' =>$request->name]);
-        // Variable de un solo uso para alertas
-        session()->flash('swal',
-            [
-                'icon' => 'success',
-                'title' => 'Usuario creado correctamente.',
-                'text' => 'El usuario se ha creado correctamente.',
-            ]
-        );
+{
+    $data = $request->validate([ //Validar especificaciones de informacion de entrada a la base d e datos
+        'name' => 'required|string|max:255',
+        'email' => 'required|email|unique:users,email',
+        'password' => 'required|string|min:8|confirmed',
+        'phone' => 'required|string|max:20',
+        'id_number' => 'required|string|max:50|unique:users,id_number',
+        'adress' => 'required|string|max:255',
+        'role_id' => 'required|exists:roles,id',
+    ]);
 
-        //Redireccionamiento a tabla
-        return redirect()->route('admin.users.index')->with('success', 'User created successfully.');
-    }
+    $user = User::create($data);
+    // Si usas roles (ej. Spatie)
+    $user->roles()->attach($data['role_id']);
+
+    session()->flash('swal', [
+        'icon' => 'success',
+        'title' => 'Usuario creado correctamente',
+        'text' => 'El usuario se ha creado correctamente.',
+    ]);
+
+    return redirect()->route('admin.users.index')->with('sucess','User created sucessfully.');
+}
 
     /**
      * Display the specified resource.
