@@ -16,7 +16,7 @@ class DatabaseSeeder extends Seeder
         // User::factory(10)->create();
         //Llamar al Roleseeder creado
         $this->call([
-            RoleSeeder::class,
+            RoleSeeder::class, //Nesecitamos que se creen los roles para luego asignarlos a los usuarios
             UserSeeder::class
         ]);
 

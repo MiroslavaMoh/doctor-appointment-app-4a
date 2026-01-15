@@ -67,87 +67,62 @@ class UserController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Role $user)
-    {
-         if($user->id <=1){
-            session()->flash('swal', [
-                'icon' => 'error',
-                'title' => 'No se puede editar este usuario.',
-                'text' => 'Este usuario es esencial para el sistema y no puede ser eliminado.',
-            ]);
+    public function edit(User $user)
+{
+    if ($user->id <= 1) {
+        session()->flash('swal', [
+            'icon' => 'error',
+            'title' => 'No se puede editar este usuario.',
+            'text' => 'Este usuario es esencial para el sistema.',
+        ]);
 
-            return redirect()->route('admin.users.index');
-         }
-        return view('admin.users.edit', compact('user'));
+        return redirect()->route('admin.users.index');
     }
+
+    $roles = Role::all();
+
+    $user->load('roles'); // ✅ ahora sí existe
+
+    return view('admin.users.edit', compact('user', 'roles'));
+}
+
 
     /**
      * Update the specified resource in storage.
      */
-   public function update(Request $request, Role $user)
-    {
-        // Validar edición correcta
-        $request->validate([
-            'name' => 'required|unique:users,name,' . $user->id,
-        ]);
+   public function update(Request $request, User $user)
+{
+    $data = $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|email|unique:users,email,' . $user->id,
+        'phone' => 'required|string|max:20',
+        'id_number' => 'required|string|max:50|unique:users,id_number,' . $user->id,
+        'adress' => 'required|string|max:255',
+        'password' => 'nullable|min:8|confirmed',
+        'role_id' => 'required|exists:roles,id',
+    ]);
 
-        // Si no hubo cambios
-        if ($user->name === $request->name) {
-            session()->flash('swal', [
-                'icon' => 'info',
-                'title' => 'Sin cambios.',
-                'text' => 'No se detectaron modificaciones.',
-            ]);
 
-            return redirect()->route('admin.users.edit', $user);
-        }
-
-        // Actualizar rol
-        $user->update(['name' => $request->name]);
-
-        // Alerta de éxito
-        session()->flash('swal', [
-            'icon' => 'success',
-            'title' => 'Usuario actualizado correctamente.',
-            'text' => 'El usuario se ha editado correctamente.',
-        ]);
-
-        // Redireccionamiento a la tabla
-        return redirect()->route('admin.users.index')->with('success', 'User updated successfully.');
+    if (!empty($data['password'])) {
+        $data['password'] = bcrypt($data['password']);
+    } else {
+        unset($data['password']); // ❌ No enviar null
     }
+    
+    $user->update($data);
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Role $user)
-    {
-        if ($user->id <=1){
-            //variable de un solo uso
-            session()->flash('swal',
-            [
-                'icon' => 'error',
-                'title' => 'Error',
-                'text' => 'No se puede eliminar este usuario es de vital importancia para la app.'
-            ]
-            );
-            return redirect()->route('admin.users.index');
-        }
+    $user->roles()->sync($data['role_id']);
 
+    session()->flash('swal', [
+        'icon' => 'success',
+        'title' => 'Usuario actualizado correctamente.',
+        'text' => 'El usuario se ha editado correctamente.',
+    ]);
 
-        //Alerta
-        session()->flash('swal',
+    return redirect()
+        ->route('admin.users.edit', $user->id)
+        ->with('success', 'User updated successfully.');
+}
 
-            [
-                'icon' => 'success',
-                'title' => 'Usuario eliminado correctamente',
-                'text' => 'El usuario ha sido eliminado exitosamente'
-            ]
-        );
-                //Borrar el elemento
-        $user->delete();
-
-        //Redireccionar al mismo lugar
-        return redirect()->route('admin.users.index');
-    }
  
 }

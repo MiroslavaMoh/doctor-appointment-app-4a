@@ -78,7 +78,7 @@
                 label="Dirección"
                 name="adress"
                 placeholder="Domicilio"
-                value="{{ old('address') }}"
+                value="{{ old('adress') }}"
                 required
                 autocomplete="street-address" />
 
