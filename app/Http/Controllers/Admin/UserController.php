@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role; //usa spatie porque es externo a user
 use App\Models\User; //usa propio porque es user
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -122,6 +123,33 @@ class UserController extends Controller
     return redirect()
         ->route('admin.users.edit', $user->id)
         ->with('success', 'User updated successfully.');
+}
+
+public function destroy(User $user)
+{
+    //Para que el bodoque edel usuario no se borre a el mismo 
+    if (Auth::id() == $user->id){
+        session()->flash('swal', [
+        'icon' => 'error',
+        'title' => 'Error',
+        'text' => 'No te puedes eliminar a ti mismo.',
+    ]);
+        abort(403,'No puedes borrar tu propio usuario');
+    }
+    //Elimar roles asociados
+    $user->roles()->detach();
+
+    //elimar usuario
+    $user->delete();
+
+    session()->flash('swal', [
+        'icon' => 'success',
+        'title' => 'Usuario elimado correctamente.',
+        'text' => 'El usuario se eliminado correctamente.',
+    ]);
+
+    return redirect()
+        ->route('admin.users.index');
 }
 
  
