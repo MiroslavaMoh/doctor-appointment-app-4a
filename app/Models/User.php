@@ -71,4 +71,9 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    //relacion uno a uno con patient
+    public function patient(){
+        return $this->hasOne(Patient::class);
+    }
 }

@@ -41,6 +41,12 @@ $links = [
         'active' => request()->routeIs('admin.roles.*')
     ],
     [
+        'name' => 'Pacientes',
+        'icon' => 'fa-solid fa-user-injured',
+        'href' => route('admin.patients.index'),
+        'active' => request()->routeIs('admin.patients.*')
+    ],
+    [
         'name' => 'More Options',
         'icon' => 'fa-solid fa-bars',
         'active' => false,

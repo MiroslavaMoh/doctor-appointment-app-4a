@@ -17,7 +17,8 @@ class DatabaseSeeder extends Seeder
         //Llamar al Roleseeder creado
         $this->call([
             RoleSeeder::class, //Nesecitamos que se creen los roles para luego asignarlos a los usuarios
-            UserSeeder::class
+            UserSeeder::class,
+            BloodTypeSeeder::class
         ]);
 
     
