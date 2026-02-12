@@ -21,7 +21,8 @@ return new class extends Migration
                 $table->string('surgical_history')->nullable();
                 $table->string('family_history')->nullable();
                 $table->string('observations')->nullable();
-                $table->string('emergency_contact')->nullable();
+                $table->string('emergency_contact_name')->nullable();
+                $table->string('emergency_contact_phone')->nullable();
                 $table->string('emergency_contact_relationship')->nullable();
                 $table->timestamps();
 
