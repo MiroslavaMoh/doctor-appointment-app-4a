@@ -48,12 +48,12 @@ class DoctorTable extends DataTableComponent
                 ->format(fn($value) => $value ?? 'N/A'),
 
 
-            Column::make("Email del doctor", "user.email")
+            /*Column::make("Email del doctor", "user.email")
                 ->sortable(),
             Column::make("Número de id", "user.id_number")
                 ->sortable(),
             Column::make("Teléfono", "user.phone")
-                ->sortable(),
+                ->sortable(),*/
             
              Column::make("Acciones")
                 ->label(fn($row) => view('admin.doctors.actions', ['doctor' => $row])),  
