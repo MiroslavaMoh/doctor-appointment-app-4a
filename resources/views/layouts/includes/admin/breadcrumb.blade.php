@@ -20,11 +20,6 @@
                 </li>
             @endforeach
         </ol>
-        {{--Ultimo elemento del breadcrumb--}}
-        @if(count($breadcrumbs))
-            <h6 class="font-bold mt-2">
-                {{ end($breadcrumbs)['name'] }}
-            </h6>
-        @endif
+        
         </nav>
 @endif

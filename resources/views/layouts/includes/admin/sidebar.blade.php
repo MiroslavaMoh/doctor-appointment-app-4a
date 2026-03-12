@@ -8,25 +8,13 @@ $links = [
         'active' => request()->routeIs('admin.dashboard'),
     ],
     [
-        'header' => 'Management'
+        'header' => 'Gestión'
     ],
     [
-        'name' => 'Cats',
-        'icon' => 'fa-solid fa-cat',
-        'href' => route('admin.dashboard'),
-        'active' => request()->routeIs('admin.dashboard')
-    ],
-    [
-        'name' => 'Playdates',
-        'icon' => 'fa-solid fa-calendar',
-        'href' => route('admin.dashboard'),
-        'active' => request()->routeIs('admin.dashboard')
-    ],
-    [
-        'name' => 'Food service',
-        'icon' => 'fa-solid fa-fish',
-        'href' => route('admin.dashboard'),
-        'active' => request()->routeIs('admin.dashboard')
+        'name' => 'Citas médicas',
+        'icon' => 'fa-solid fa-calendar-check',
+        'href' => route('admin.appointments.index'),
+        'active' => request()->routeIs('admin.appointments.*')
     ],
     [
         'name' => 'Usuarios',

@@ -5,7 +5,7 @@
     ['name' => 'Doctores',
     'href' => route('admin.doctors.index')],
 
-    ['name' => 'Edit'],
+    ['name' => 'Editar'],
 ]">
 
 <x-slot name="title">
@@ -30,7 +30,10 @@
                         </div>
                     </div>
                     <div class="flex space-x-3 mt-6 lg:mt-0">
-                        <x-wire-button outline gray href="{{ route('admin.doctors.index') }}">Volver</x-wire-button>
+                        <x-wire-button outline href="{{ route('admin.doctors.schedule', $doctor) }}">
+                            <i class="fa-solid fa-calendar-days mr-1"></i>
+                            Disponibilidad de horarios
+                        </x-wire-button>
                         <x-wire-button type="submit">
                             <i class="fa-solid fa-check"></i>
                             Guardar cambios

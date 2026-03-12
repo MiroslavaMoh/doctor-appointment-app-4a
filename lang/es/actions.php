@@ -116,4 +116,6 @@ return [
     'user'            => 'Usuario',
     'view'            => 'Ver',
     'yes'             => 'Sí',
+    //'The emergency contact name field must not be greater than 255 characters.' =>'El campo debe no puede tener más de 255 caracteres',
+
 ];
