@@ -107,7 +107,17 @@ class AppointmentController extends Controller
 
         $phone = $appointment->patient->user->phone ?? null;
 
+        \Log::info('sendConfirmation llamado', [
+            'appointment_id' => $appointment->id,
+            'patient'        => $appointment->patient->user->name ?? 'NULL',
+            'phone'          => $phone ?? 'NULL',
+            'twilio_sid'     => config('services.twilio.sid') ? 'presente' : 'VACÍO',
+            'twilio_token'   => config('services.twilio.token') ? 'presente' : 'VACÍO',
+            'twilio_from'    => config('services.twilio.whatsapp_from') ?? 'VACÍO',
+        ]);
+
         if (!$phone) {
+            \Log::warning('sendConfirmation: no hay teléfono, mensaje no enviado.');
             return;
         }
 

@@ -6,6 +6,7 @@ use App\Models\Appointment;
 use App\Models\Doctors;
 use App\Models\DoctorSchedule;
 use App\Models\Speciality;
+use App\Services\WhatsAppService;
 use Carbon\Carbon;
 use Livewire\Component;
 
@@ -82,7 +83,7 @@ class AppointmentCreate extends Component
             ->where('start_time', $this->time . ':00')
             ->first();
 
-        Appointment::create([
+        $appointment = Appointment::create([
             'patient_id'       => $patient->id,
             'doctor_id'        => $doctorId,
             'appointment_date' => $this->date,
@@ -91,9 +92,33 @@ class AppointmentCreate extends Component
             'status'           => 'programado',
         ]);
 
+        $this->sendWhatsAppConfirmation($appointment);
+
         session()->flash('success', 'Cita creada correctamente.');
 
         return redirect()->route('admin.appointments.index');
+    }
+
+    private function sendWhatsAppConfirmation(Appointment $appointment): void
+    {
+        $appointment->load('patient.user', 'doctor.user');
+
+        $phone = $appointment->patient->user->phone ?? null;
+        if (!$phone) return;
+
+        $patient   = $appointment->patient->user->name;
+        $doctor    = $appointment->doctor->user->name;
+        $date      = Carbon::parse($appointment->appointment_date ?? $appointment->date)->format('d/m/Y');
+        $startTime = $appointment->start_time;
+
+        $message = "¡Hola {$patient}! Su cita médica ha sido registrada exitosamente.\n\n"
+            . "🩺 *Doctor:* {$doctor}\n"
+            . "📅 *Fecha:* {$date}\n"
+            . "🕐 *Hora:* {$startTime}\n\n"
+            . "Le enviaremos un recordatorio el día anterior a su cita.\n"
+            . "Sistema de Gestión Médica";
+
+        app(WhatsAppService::class)->send($phone, $message);
     }
 
     public function render()
