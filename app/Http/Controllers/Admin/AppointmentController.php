@@ -6,6 +6,7 @@ use App\Models\Appointment;
 use App\Models\Doctors;
 use App\Models\Patient;
 use App\Http\Controllers\Controller;
+use App\Services\WhatsAppService;
 use Illuminate\Http\Request;
 
 class AppointmentController extends Controller
@@ -45,7 +46,9 @@ class AppointmentController extends Controller
             $data['duration'] = ((int)$eh * 60 + (int)$em) - ((int)$sh * 60 + (int)$sm);
         }
 
-        Appointment::create($data);
+        $appointment = Appointment::create($data);
+
+        $this->sendConfirmation($appointment);
 
         return redirect()->route('admin.appointments.index')
             ->with('success', 'Cita registrada correctamente.');
@@ -96,5 +99,40 @@ class AppointmentController extends Controller
         $appointment->load('patient.user', 'doctor.user', 'consultation.medications');
 
         return view('admin.appointments.consult', compact('appointment'));
+    }
+
+    private function sendConfirmation(Appointment $appointment): void
+    {
+        $appointment->load('patient.user', 'doctor.user');
+
+        $phone = $appointment->patient->user->phone ?? null;
+
+        \Log::info('sendConfirmation llamado', [
+            'appointment_id' => $appointment->id,
+            'patient'        => $appointment->patient->user->name ?? 'NULL',
+            'phone'          => $phone ?? 'NULL',
+            'twilio_sid'     => config('services.twilio.sid') ? 'presente' : 'VACÍO',
+            'twilio_token'   => config('services.twilio.token') ? 'presente' : 'VACÍO',
+            'twilio_from'    => config('services.twilio.whatsapp_from') ?? 'VACÍO',
+        ]);
+
+        if (!$phone) {
+            \Log::warning('sendConfirmation: no hay teléfono, mensaje no enviado.');
+            return;
+        }
+
+        $patient   = $appointment->patient->user->name;
+        $doctor    = $appointment->doctor->user->name;
+        $date      = $appointment->date->format('d/m/Y');
+        $startTime = $appointment->start_time;
+
+        $message = "¡Hola {$patient}! Su cita médica ha sido registrada exitosamente.\n\n"
+            . "🩺 *Doctor:* {$doctor}\n"
+            . "📅 *Fecha:* {$date}\n"
+            . "🕐 *Hora:* {$startTime}\n\n"
+            . "Le enviaremos un recordatorio el día anterior a su cita.\n"
+            . "Sistema de Gestión Médica";
+
+        app(WhatsAppService::class)->send($phone, $message);
     }
 }
