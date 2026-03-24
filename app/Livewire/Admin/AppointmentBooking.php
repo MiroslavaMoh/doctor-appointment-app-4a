@@ -2,12 +2,14 @@
 
 namespace App\Livewire\Admin;
 
+use App\Mail\AppointmentConfirmationMail;
 use App\Models\Appointment;
 use App\Models\Doctors;
 use App\Models\Patient;
 use App\Models\Speciality;
 use App\Services\WhatsAppService;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
 
 class AppointmentBooking extends Component
@@ -141,6 +143,7 @@ class AppointmentBooking extends Component
         ]);
 
         $this->sendWhatsAppConfirmation($appointment);
+        $this->sendEmailConfirmation($appointment);
 
         session()->flash('success', 'Cita registrada correctamente.');
 
@@ -167,6 +170,29 @@ class AppointmentBooking extends Component
             . "Sistema de Gestión Médica";
 
         app(WhatsAppService::class)->send($phone, $message);
+    }
+
+    private function sendEmailConfirmation(Appointment $appointment): void
+    {
+        $appointment->load('patient.user', 'doctor.user', 'doctor.speciality');
+
+        $patientEmail = $appointment->patient->user->email ?? null;
+        if ($patientEmail) {
+            try {
+                Mail::to($patientEmail)->send(new AppointmentConfirmationMail($appointment, 'patient'));
+            } catch (\Throwable $e) {
+                \Log::error('Error enviando correo al paciente (Livewire)', ['error' => $e->getMessage()]);
+            }
+        }
+
+        $doctorEmail = $appointment->doctor->user->email ?? null;
+        if ($doctorEmail) {
+            try {
+                Mail::to($doctorEmail)->send(new AppointmentConfirmationMail($appointment, 'doctor'));
+            } catch (\Throwable $e) {
+                \Log::error('Error enviando correo al doctor (Livewire)', ['error' => $e->getMessage()]);
+            }
+        }
     }
 
     public function render()
