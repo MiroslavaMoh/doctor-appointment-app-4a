@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Mail\AppointmentConfirmationMail;
 use App\Models\Appointment;
 use App\Models\Doctors;
 use App\Models\Patient;
 use App\Http\Controllers\Controller;
 use App\Services\WhatsAppService;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class AppointmentController extends Controller
 {
@@ -49,6 +52,7 @@ class AppointmentController extends Controller
         $appointment = Appointment::create($data);
 
         $this->sendConfirmation($appointment);
+        $this->sendEmailConfirmation($appointment);
 
         return redirect()->route('admin.appointments.index')
             ->with('success', 'Cita registrada correctamente.');
@@ -101,6 +105,24 @@ class AppointmentController extends Controller
         return view('admin.appointments.consult', compact('appointment'));
     }
 
+    /**
+     * Stream the appointment confirmation PDF in the browser.
+     */
+    public function printPdf(Appointment $appointment)
+    {
+        $appointment->load('patient.user', 'doctor.user', 'doctor.speciality');
+
+        $pdf = Pdf::loadView('pdf.appointment-confirmation', compact('appointment'));
+
+        $filename = 'comprobante-cita-' . str_pad($appointment->id, 6, '0', STR_PAD_LEFT) . '.pdf';
+
+        return $pdf->stream($filename);
+    }
+
+    // -------------------------------------------------------------------------
+    // Private helpers
+    // -------------------------------------------------------------------------
+
     private function sendConfirmation(Appointment $appointment): void
     {
         $appointment->load('patient.user', 'doctor.user');
@@ -134,5 +156,34 @@ class AppointmentController extends Controller
             . "Sistema de Gestión Médica";
 
         app(WhatsAppService::class)->send($phone, $message);
+    }
+
+    private function sendEmailConfirmation(Appointment $appointment): void
+    {
+        $appointment->load('patient.user', 'doctor.user', 'doctor.speciality');
+
+        // Send to patient
+        $patientEmail = $appointment->patient->user->email ?? null;
+        if ($patientEmail) {
+            try {
+                Mail::to($patientEmail)
+                    ->send(new AppointmentConfirmationMail($appointment, 'patient'));
+                \Log::info('Correo de confirmación enviado al paciente', ['email' => $patientEmail]);
+            } catch (\Throwable $e) {
+                \Log::error('Error enviando correo al paciente', ['error' => $e->getMessage()]);
+            }
+        }
+
+        // Send to doctor
+        $doctorEmail = $appointment->doctor->user->email ?? null;
+        if ($doctorEmail) {
+            try {
+                Mail::to($doctorEmail)
+                    ->send(new AppointmentConfirmationMail($appointment, 'doctor'));
+                \Log::info('Correo de confirmación enviado al doctor', ['email' => $doctorEmail]);
+            } catch (\Throwable $e) {
+                \Log::error('Error enviando correo al doctor', ['error' => $e->getMessage()]);
+            }
+        }
     }
 }
