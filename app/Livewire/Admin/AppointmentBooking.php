@@ -2,12 +2,14 @@
 
 namespace App\Livewire\Admin;
 
+use App\Mail\AppointmentConfirmationMail;
 use App\Models\Appointment;
 use App\Models\Doctors;
 use App\Models\Patient;
 use App\Models\Speciality;
 use App\Services\WhatsAppService;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
 
 class AppointmentBooking extends Component

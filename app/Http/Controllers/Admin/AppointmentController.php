@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Mail\AppointmentConfirmationMail;
 use App\Models\Appointment;
 use App\Models\Doctors;
 use App\Models\Patient;
 use App\Http\Controllers\Controller;
 use App\Services\WhatsAppService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class AppointmentController extends Controller
 {

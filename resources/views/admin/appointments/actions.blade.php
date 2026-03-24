@@ -9,8 +9,13 @@
         <i class="fa-solid fa-pen-to-square"></i>
     </x-wire-button>
 
-    {{-- Imprimir (no funcional aún) --}}
-    <x-wire-button green xs disabled title="Próximamente">
+    {{-- Imprimir / Ver PDF --}}
+    <x-wire-button
+        href="{{ route('admin.appointments.pdf', $appointment) }}"
+        target="_blank"
+        green xs
+        title="Ver comprobante PDF"
+    >
         <i class="fa-solid fa-print"></i>
     </x-wire-button>
 </div>

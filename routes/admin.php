@@ -24,4 +24,5 @@ Route::post('doctors/{doctor}/schedule', [DoctorController::class, 'updateSchedu
 // Citas médicas
 Route::get('appointments/my', [AppointmentController::class, 'myAppointments'])->name('appointments.my');
 Route::get('appointments/{appointment}/consult', [AppointmentController::class, 'consult'])->name('appointments.consult');
+Route::get('appointments/{appointment}/pdf', [AppointmentController::class, 'printPdf'])->name('appointments.pdf');
 Route::resource('appointments', AppointmentController::class);
